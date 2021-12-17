@@ -26,5 +26,6 @@
 # End of https://www.toptal.com/developers/gitignore/api/go
 
 server
+client
 .git
 bin

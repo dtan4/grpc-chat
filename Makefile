@@ -19,3 +19,6 @@ compile-proto: $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC)
 
 lint-proto:
 	buf lint
+
+build-backend-client:
+	go build -o client github.com/dtan4/grpc-chat/backend/cmd/client

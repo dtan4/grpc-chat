@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package grpcchat.chat.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dtan4/grpc-chat/backend/api/chat/v1;chatv1";
+
+service ChatService {
+    rpc Stream(stream StreamRequest) returns (stream StreamResponse);
+}
+
+message StreamRequest {
+    string username = 1;
+    string message = 2;
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+message StreamResponse {
+    string username = 1;
+    string message = 2;
+    google.protobuf.Timestamp timestamp = 3;
+}

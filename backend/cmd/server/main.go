@@ -9,6 +9,10 @@ import (
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
+	chatv1 "github.com/dtan4/grpc-chat/backend/api/chat/v1"
+	"github.com/dtan4/grpc-chat/backend/pkg/server/chat"
+	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -23,6 +27,10 @@ func realMain(args []string, logger *zap.Logger) error {
 	defer l.Close()
 
 	s := grpc.NewServer()
+
+	chatv1.RegisterChatServiceServer(s, chat.New(logger))
+
+	reflection.Register(s)
 
 	logger.Info("server is listening", zap.Any("addr", l.Addr()))
 
@@ -53,6 +61,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create zap logger: %s", err)
 	}
+	defer logger.Sync()
 
 	if err := realMain(os.Args, logger); err != nil {
 		logger.Error("failed to run server", zap.Error(err))

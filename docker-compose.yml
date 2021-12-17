@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      dockerfile: dockerfiles/backend/Dockerfile
+      context: .
+    ports:
+      - 50051:50051

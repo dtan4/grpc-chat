@@ -13,6 +13,7 @@ import (
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	chatv1 "github.com/dtan4/grpc-chat/backend/api/chat/v1"
@@ -25,9 +26,11 @@ const (
 func realMain(args []string, logger *zap.Logger) error {
 	opts := []grpc.DialOption{}
 
-	opts = append(opts, grpc.WithInsecure())
+	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	conn, err := grpc.Dial(serverAddr, opts...)
+	ctx := context.Background()
+
+	conn, err := grpc.DialContext(ctx, serverAddr, opts...)
 	if err != nil {
 		return fmt.Errorf("failed to dial: %w", err)
 	}
@@ -37,13 +40,14 @@ func realMain(args []string, logger *zap.Logger) error {
 
 	client := chatv1.NewChatServiceClient(conn)
 
-	ctx := context.Background()
-
 	stream, err := client.Stream(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to create new stream: %w", err)
 	}
-	defer stream.CloseSend()
+	defer func() {
+		logger.Info("closing")
+		stream.CloseSend()
+	}()
 
 	waitc := make(chan struct{})
 
@@ -80,6 +84,9 @@ func realMain(args []string, logger *zap.Logger) error {
 
 		for scanner.Scan() {
 			msg := scanner.Text()
+			if msg == "" {
+				continue
+			}
 
 			if err := stream.Send(&chatv1.StreamRequest{
 				Username:  username,

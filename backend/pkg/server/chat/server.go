@@ -5,9 +5,10 @@ import (
 	"io"
 	"sync"
 
-	chatv1 "github.com/dtan4/grpc-chat/backend/api/chat/v1"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+
+	chatv1 "github.com/dtan4/grpc-chat/backend/api/chat/v1"
 )
 
 type Server struct {

@@ -9,10 +9,10 @@ import (
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	chatv1 "github.com/dtan4/grpc-chat/backend/api/chat/v1"
 	"github.com/dtan4/grpc-chat/backend/pkg/server/chat"
-	"google.golang.org/grpc/reflection"
 )
 
 const (
